@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Biblioteca - Sistema Seguro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <!-- Vinculamos el archivo CSS -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h1>📚 Sistema de Biblioteca</h1>
+
+  <!-- ==========================================
+       SECCIÓN AUTH (login + registro)
+  =========================================== -->
+  <div class="seccion" id="loginSeccion" style="display:block;">
+
+    <!-- Advertencia si no hay HTTPS -->
+    <div class="https-warn" id="httpsWarn">
+      ⚠️ <strong>Conexión no segura:</strong> Este sitio no usa HTTPS.
+      En producción siempre debe usarse HTTPS + TLS para proteger los datos transmitidos.
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="cambiarTab('login')">🔐 Iniciar Sesión</button>
+      <button class="tab-btn"        onclick="cambiarTab('registro')">📝 Registrarse</button>
+    </div>
+
+    <!-- ── TAB LOGIN ───────────────────────── -->
+    <div class="tab-content active" id="tab-login">
+      <h2>Acceso al sistema</h2>
+
+      <label class="field-label">Usuario</label>
+      <input type="text" id="usuario" placeholder="Ingresa tu usuario" autocomplete="username">
+
+      <label class="field-label">Contraseña</label>
+      <input type="password" id="clave" placeholder="Ingresa tu contraseña" autocomplete="current-password">
+
+      <div class="attempts-wrap">
+        Intentos restantes:
+        <div class="attempt-dots" id="intentosDots"></div>
+      </div>
+
+      <div id="mensajeLogin" class="msg"></div>
+
+      <button id="btnLogin" onclick="iniciarSesion()">Ingresar</button>
+
+      <!-- Medidas de seguridad visibles -->
+      <div class="security-badges">
+        <span class="badge green">✓ Hash SHA-256</span>
+        <span class="badge green">✓ Salt aleatorio</span>
+        <span class="badge blue">🛡 Anti fuerza bruta</span>
+        <span class="badge blue">🍪 Cookie segura</span>
+        <span class="badge yellow" id="badgeHTTPS">⚠ HTTP (dev)</span>
+      </div>
+    </div>
+
+    <!-- ── TAB REGISTRO ────────────────────── -->
+    <div class="tab-content" id="tab-registro">
+      <h2>Crear cuenta nueva</h2>
+
+      <label class="field-label">Nombre de usuario</label>
+      <input type="text" id="regUsuario" placeholder="Mínimo 4 caracteres"
+             oninput="validarCampoUsuario()">
+
+      <label class="field-label">Contraseña</label>
+      <input type="password" id="regClave" placeholder="Crea una contraseña segura"
+             oninput="validarFuerza()">
+
+      <!-- Barra de fortaleza -->
+      <div class="strength-wrap">
+        <div class="strength-bar">
+          <span id="sb1"></span><span id="sb2"></span>
+          <span id="sb3"></span><span id="sb4"></span>
+        </div>
+        <div class="strength-label" id="strengthLabel">Ingresa una contraseña</div>
+      </div>
+
+      <!-- Requisitos -->
+      <ul class="req-list">
+        <li id="req-len">Mínimo 8 caracteres</li>
+        <li id="req-upper">Al menos una mayúscula (A-Z)</li>
+        <li id="req-lower">Al menos una minúscula (a-z)</li>
+        <li id="req-num">Al menos un número (0-9)</li>
+        <li id="req-special">Al menos un carácter especial (!@#$%…)</li>
+      </ul>
+
+      <label class="field-label">Confirmar contraseña</label>
+      <input type="password" id="regClaveConf" placeholder="Repite la contraseña"
+             oninput="validarConfirmacion()">
+
+      <div id="mensajeRegistro" class="msg"></div>
+
+      <button onclick="registrarUsuario()">Crear cuenta</button>
+    </div>
+
+  </div><!-- /loginSeccion -->
+
+  <!-- ==========================================
+       SECCIÓN CATÁLOGO
+  =========================================== -->
+  <div class="seccion" id="catalogoSeccion">
+    <div class="header-catalogo">
+      <div>
+        <h2>📖 Catálogo de Libros</h2>
+        <p>Rol: <span id="rolUsuario" style="color:#3b82f6;"></span>
+           &nbsp;·&nbsp; Usuario: <strong id="nombreUsuario"></strong></p>
+      </div>
+      <button class="btn-cerrar" onclick="cerrarSesion()">Cerrar sesión</button>
+    </div>
+
+    <input type="text" id="busqueda"
+           placeholder="🔍 Buscar por título, autor o género..."
+           oninput="buscarLibros()">
+
+    <table>
+      <thead>
+        <tr>
+          <th>Título</th><th>Autor</th><th>Género</th><th>Año</th><th>Disponibilidad</th>
+        </tr>
+      </thead>
+      <tbody id="tablaLibros"></tbody>
+    </table>
+
+    <!-- Panel de sesión -->
+    <div class="session-info">
+      🔒 <strong>Sesión activa:</strong>
+      ID <span id="sessionId"></span> &nbsp;·&nbsp;
+      Expira en <span id="sessionExpiry"></span> min &nbsp;·&nbsp;
+      Almacenamiento con <strong>SHA-256 + salt</strong> &nbsp;·&nbsp;
+      Cookie <strong>SameSite=Strict</strong>
+    </div>
+  </div>
+
+  <!-- Vinculamos el archivo JavaScript -->
+  <script src="script.js"></script>
+</body>
+</html>
